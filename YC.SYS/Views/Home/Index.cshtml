@@ -1,8 +1,72 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "訂單管理";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!--訂單列表-->
+<div>
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-hover text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">訂單編號</th>
+                        <th scope="col">客戶姓名</th>
+                        <th scope="col">負責員工</th>
+                        <th scope="col">訂購日期</th>
+                        <th scope="col">出貨日期</th>
+                        <th scope="col">送貨城市</th>
+                        <th scope="col">總金額</th>
+                        <th scope="col">狀態</th>
+                        <th scope="col" width="180">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.OrderID</td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.EmployeeName</td>
+                            <td>@(item.OrderDate?.ToString("yyyy/MM/dd") ?? "-")</td>
+                            <td>@(item.ShippedDate?.ToString("yyyy/MM/dd") ?? "-")</td>
+                            <td>@item.ShipCity</td>
+                            <td>$@item.TotalAmount.ToString("N2")</td>
+                            <td>
+                                <span class="badge @GetStatusClass(item.Status)">@item.Status</span>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-info btn-sm">檢視</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm">編輯</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm">刪除</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">沒有找到符合條件的訂單</h5>
+            <p class="text-muted">請嘗試調整搜尋條件或新增第一筆訂單。</p>
+        </div>
+    }
 </div>
+
+@functions {
+    string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "已出貨" => "bg-success",
+            "處理中" => "bg-warning text-dark",
+            "未處理" => "bg-secondary",
+            _ => "bg-light text-dark"
+        };
+    }
+}
