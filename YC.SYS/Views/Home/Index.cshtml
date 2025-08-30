@@ -2,7 +2,7 @@
     ViewData["Title"] = "訂單管理";
 }
 
-<!--訂單列表-->
+<!-- 訂單列表 -->
 <div>
     @if (Model != null && Model.Count > 0)
     {
@@ -37,7 +37,7 @@
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-outline-info btn-sm">檢視</button>
+                                    <button type="button" class="btn btn-outline-info btn-sm" onclick="viewOrder(@item.OrderID)">檢視</button>
                                     <button type="button" class="btn btn-outline-primary btn-sm">編輯</button>
                                     <button type="button" class="btn btn-outline-danger btn-sm">刪除</button>
                                 </div>
@@ -58,6 +58,30 @@
     }
 </div>
 
+<!-- 檢視訂單 -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">訂單詳細資料</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="orderDetailContent">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">載入中...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @functions {
     string GetStatusClass(string status)
     {
@@ -70,3 +94,17 @@
         };
     }
 }
+
+<script>
+    // 檢視
+    function viewOrder(orderId) {
+        $('#orderDetailContent').html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">載入中...</span></div></div>');
+        $('#viewModal').modal('show');
+
+        $.get('@Url.Action("Details")', { id: orderId }, function(data) {
+            $('#orderDetailContent').html(data);
+        }).fail(function() {
+            $('#orderDetailContent').html('<div class="alert alert-danger">載入訂單詳細資料時發生錯誤。</div>');
+        });
+    }
+</script>

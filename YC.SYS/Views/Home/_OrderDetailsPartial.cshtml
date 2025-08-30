@@ -1,0 +1,172 @@
+﻿@model YC.SYS.ViewModels.OrdersVM.OrderDetailViewModel
+
+<div class="row">
+    <!-- 訂單基本資訊 -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">訂單資訊</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        <td><strong>訂單編號:</strong></td>
+                        <td>#@Model.OrderID</td>
+                    </tr>
+                    <tr>
+                        <td><strong>客戶公司:</strong></td>
+                        <td>@Model.CustomerCompany</td>
+                    </tr>
+                    <tr>
+                        <td><strong>聯絡人:</strong></td>
+                        <td>@Model.CustomerName</td>
+                    </tr>
+                    <tr>
+                        <td><strong>負責員工:</strong></td>
+                        <td>@Model.EmployeeName</td>
+                    </tr>
+                    <tr>
+                        <td><strong>訂購日期:</strong></td>
+                        <td>@(Model.OrderDate?.ToString("yyyy/MM/dd") ?? "-")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>要求日期:</strong></td>
+                        <td>@(Model.RequiredDate?.ToString("yyyy/MM/dd") ?? "-")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>出貨日期:</strong></td>
+                        <td>@(Model.ShippedDate?.ToString("yyyy/MM/dd") ?? "-")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>訂單狀態:</strong></td>
+                        <td>
+                            <span class="badge @GetStatusClass(Model.Status)">@Model.Status</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 運送資訊 -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">運送資訊</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        <td><strong>收貨人:</strong></td>
+                        <td>@Model.ShipName</td>
+                    </tr>
+                    <tr>
+                        <td><strong>收貨地址:</strong></td>
+                        <td>@Model.ShipAddress</td>
+                    </tr>
+                    <tr>
+                        <td><strong>收貨城市:</strong></td>
+                        <td>@Model.ShipCity</td>
+                    </tr>
+                    <tr>
+                        <td><strong>收貨地區:</strong></td>
+                        <td>@(Model.ShipRegion ?? "-")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>郵遞區號:</strong></td>
+                        <td>@Model.ShipPostalCode</td>
+                    </tr>
+                    <tr>
+                        <td><strong>收貨國家:</strong></td>
+                        <td>@Model.ShipCountry</td>
+                    </tr>
+                    <tr>
+                        <td><strong>運費:</strong></td>
+                        <td>$@Model.Freight.ToString("N2")</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 訂單明細 -->
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">訂單明細</h6>
+            </div>
+            <div class="card-body">
+                @if (Model.OrderDetails != null && Model.OrderDetails.Count > 0)
+                {
+                    <div class="table">
+                        <table class="table table-sm text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>產品名稱</th>
+                                    <th>單價</th>
+                                    <th>數量</th>
+                                    <th>折扣</th>
+                                    <th>小計</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detail in Model.OrderDetails)
+                                {
+                                    <tr>
+                                        <td>@detail.ProductName</td>
+                                        <td>$@detail.UnitPrice.ToString("N2")</td>
+                                        <td>@detail.Quantity</td>
+                                        <td>@((detail.Discount * 100).ToString("N1"))%</td>
+                                        <td>$@detail.Subtotal.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 總計 -->
+                    <div class="row">
+                        <div class="col-md-6 offset-md-6">
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <td class="text-end"><strong>商品小計:</strong></td>
+                                    <td class="text-end">$@Model.OrderDetails.Sum(x => x.Subtotal).ToString("N2")</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>運費:</strong></td>
+                                    <td class="text-end">$@Model.Freight.ToString("N2")</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>總金額:</strong></td>
+                                    <td class="text-end"><strong>$@Model.TotalAmount.ToString("N2")</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+                        <p class="text-muted mb-0">此訂單尚無明細項目</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "已出貨" => "bg-success",
+            "處理中" => "bg-warning text-dark",
+            "未處理" => "bg-secondary",
+            _ => "bg-light text-dark"
+        };
+    }
+}
