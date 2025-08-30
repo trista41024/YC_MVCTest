@@ -1,4 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// µù¥U NorthwindDB ³s±µ¦r¦ê
+builder.Services.AddDbContext<NorthwindContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("NorthwindDB")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
