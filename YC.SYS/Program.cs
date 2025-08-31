@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using YC.SYS.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddDbContext<NorthwindContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var app = builder.Build();
 
