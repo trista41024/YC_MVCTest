@@ -90,6 +90,30 @@ namespace YC.SYS.Controllers
             }
         }
 
+        /// <summary>
+        /// 刪除訂單資料
+        /// </summary>
+        /// <returns>刪除結果</returns>
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var order = await _context.Orders.FindAsync(id);
+                if (order != null)
+                {
+                    _context.Orders.Remove(order);
+                    await _context.SaveChangesAsync();
+                }
+
+                return Json(new { success = true, message = "訂單刪除成功！" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "刪除失敗：" + ex.Message });
+            }
+        }
+
         public IActionResult Privacy()
         {
             return View();

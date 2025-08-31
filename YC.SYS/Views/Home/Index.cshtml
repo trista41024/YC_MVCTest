@@ -169,4 +169,20 @@
             alert('儲存失敗');
         });
     }
+
+    // 刪除
+    function deleteOrder(orderId) {
+        if (confirm('確定要刪除這筆訂單嗎？')) {
+            $.post('@Url.Action("Delete")', { id: orderId }, function(data) {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload(); // 重新載入頁面
+                } else {
+                    alert(data.message);
+                }
+            }).fail(function() {
+                alert('刪除失敗');
+            });
+        }
+    }
 </script>
