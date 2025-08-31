@@ -58,15 +58,15 @@
                 <table class="table table-borderless table-sm">
                     <tr>
                         <td><strong>收貨人:</strong></td>
-                        <td>@Model.ShipName</td>
+                        <td>@(Model.ShipName ?? "-")</td>
                     </tr>
                     <tr>
                         <td><strong>收貨地址:</strong></td>
-                        <td>@Model.ShipAddress</td>
+                        <td>@(Model.ShipAddress ?? "-")</td>
                     </tr>
                     <tr>
                         <td><strong>收貨城市:</strong></td>
-                        <td>@Model.ShipCity</td>
+                        <td>@(Model.ShipCity ?? "-")</td>
                     </tr>
                     <tr>
                         <td><strong>收貨地區:</strong></td>
@@ -74,11 +74,11 @@
                     </tr>
                     <tr>
                         <td><strong>郵遞區號:</strong></td>
-                        <td>@Model.ShipPostalCode</td>
+                        <td>@(Model.ShipPostalCode ?? "-")</td>
                     </tr>
                     <tr>
                         <td><strong>收貨國家:</strong></td>
-                        <td>@Model.ShipCountry</td>
+                        <td>@(Model.ShipCountry ?? "-")</td>
                     </tr>
                     <tr>
                         <td><strong>運費:</strong></td>
