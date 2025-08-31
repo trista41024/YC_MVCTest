@@ -2,81 +2,102 @@
     ViewData["Title"] = "訂單管理";
 }
 
-<!-- 訂單列表 -->
-<div>
-    @if (Model != null && Model.Count > 0)
-    {
-        <div class="table-responsive">
-            <table class="table table-hover text-center">
-                <thead class="table-dark">
-                    <tr>
-                        <th scope="col">訂單編號</th>
-                        <th scope="col">客戶姓名</th>
-                        <th scope="col">負責員工</th>
-                        <th scope="col">訂購日期</th>
-                        <th scope="col">出貨日期</th>
-                        <th scope="col">送貨城市</th>
-                        <th scope="col">總金額</th>
-                        <th scope="col">狀態</th>
-                        <th scope="col" width="180">操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.OrderID</td>
-                            <td>@item.CustomerName</td>
-                            <td>@item.EmployeeName</td>
-                            <td>@(item.OrderDate?.ToString("yyyy/MM/dd") ?? "-")</td>
-                            <td>@(item.ShippedDate?.ToString("yyyy/MM/dd") ?? "-")</td>
-                            <td>@item.ShipCity</td>
-                            <td>$@item.TotalAmount.ToString("N2")</td>
-                            <td>
-                                <span class="badge @GetStatusClass(item.Status)">@item.Status</span>
-                            </td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-outline-info btn-sm" onclick="viewOrder(@item.OrderID)">檢視</button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm">編輯</button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm">刪除</button>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else
-    {
-        <div class="text-center py-5">
-            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-            <h5 class="text-muted">沒有找到符合條件的訂單</h5>
-            <p class="text-muted">請嘗試調整搜尋條件或新增第一筆訂單。</p>
-        </div>
-    }
-</div>
+<div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>訂單管理</h2>
+        <button type="button" class="btn btn-outline-success" onclick="createOrder()">新增訂單</button>
+    </div>
 
-<!-- 檢視訂單 -->
-<div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">訂單詳細資料</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <!-- 訂單列表 -->
+    <div>
+        @if (Model != null && Model.Count > 0)
+        {
+            <div class="table-responsive">
+                <table class="table table-hover text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">訂單編號</th>
+                            <th scope="col">客戶姓名</th>
+                            <th scope="col">負責員工</th>
+                            <th scope="col">訂購日期</th>
+                            <th scope="col">出貨日期</th>
+                            <th scope="col">送貨城市</th>
+                            <th scope="col">總金額</th>
+                            <th scope="col">狀態</th>
+                            <th scope="col" width="180">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.OrderID</td>
+                                <td>@item.CustomerName</td>
+                                <td>@item.EmployeeName</td>
+                                <td>@(item.OrderDate?.ToString("yyyy/MM/dd") ?? "-")</td>
+                                <td>@(item.ShippedDate?.ToString("yyyy/MM/dd") ?? "-")</td>
+                                <td>@item.ShipCity</td>
+                                <td>$@item.TotalAmount.ToString("N2")</td>
+                                <td>
+                                    <span class="badge @GetStatusClass(item.Status)">@item.Status</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-info btn-sm" onclick="viewOrder(@item.OrderID)">檢視</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="editOrder(@item.OrderID)">編輯</button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteOrder(@item.OrderID)">刪除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-            <div class="modal-body">
-                <div id="orderDetailContent">
-                    <div class="text-center">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">載入中...</span>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">沒有找到符合條件的訂單</h5>
+                <p class="text-muted">請嘗試調整搜尋條件或新增第一筆訂單。</p>
+            </div>
+        }
+    </div>
+
+    <!-- 檢視訂單 -->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">訂單詳細資料</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="orderDetailContent">
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">載入中...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderFormLabel">新增訂單</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="orderEditContent"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -105,6 +126,47 @@
             $('#orderDetailContent').html(data);
         }).fail(function() {
             $('#orderDetailContent').html('<div class="alert alert-danger">載入訂單詳細資料時發生錯誤。</div>');
+        });
+    }
+
+    // 新增
+    function createOrder() {
+        document.getElementById('orderFormLabel').textContent = '新增訂單'; //視窗標題
+        $('#editModal').modal('show');
+
+        $.get('@Url.Action("Create")', { }, function(data) {
+            $('#orderEditContent').html(data);
+        }).fail(function() {
+            $('#orderEditContent').html('<div class="alert alert-danger">載入訂單詳細資料時發生錯誤。</div>');
+        });
+    }
+
+    // 編輯
+    function editOrder(orderId) {
+        document.getElementById('orderFormLabel').textContent = '編輯訂單'; //視窗標題
+        $('#editModal').modal('show');
+
+        $.get('@Url.Action("Edit")', { id: orderId }, function(data) {
+            $('#orderEditContent').html(data);
+        }).fail(function() {
+            $('#orderEditContent').html('<div class="alert alert-danger">載入訂單詳細資料時發生錯誤。</div>');
+        });
+    }
+
+    // 儲存
+    function saveOrder() {
+        const form = $('#orderForm');
+
+        $.post('@Url.Action("Save")', form.serialize(), function(data) {
+            if (data.success) {
+                alert(data.message);
+                $('#editModal').modal('hide');
+                location.reload(); // 重新載入頁面
+            } else {
+                alert(data.message);
+            }
+        }).fail(function() {
+            alert('儲存失敗');
         });
     }
 </script>

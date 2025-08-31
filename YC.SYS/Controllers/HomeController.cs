@@ -43,6 +43,53 @@ namespace YC.SYS.Controllers
             return PartialView("_OrderDetailsPartial", order);
         }
 
+        /// <summary>
+        /// 新建訂單資料
+        /// </summary>
+        /// <returns>空白的訂單資料</returns>
+        public IActionResult Create()
+        {
+            var order = new Orders { };
+            return PartialView("_OrderFormPartial", order);
+        }
+
+        /// <summary>
+        /// 取得編輯訂單資料
+        /// </summary>
+        /// <returns>訂單資料</returns>
+        public async Task<IActionResult> Edit(int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return NotFound();
+
+            return PartialView("_OrderFormPartial", order);
+        }
+
+        /// <summary>
+        /// 儲存訂單資料
+        /// </summary>
+        /// <returns>儲存結果</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Save(Orders order)
+        {
+            var isEdit = order.OrderID > 0;
+            var message = isEdit ? "訂單更新" : "訂單新增";
+            try
+            {
+                if (!isEdit) _context.Orders.Add(order);
+                else _context.Orders.Update(order);
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = message + "成功！" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = message + "失敗：" + ex.Message });
+            }
+        }
+
         public IActionResult Privacy()
         {
             return View();

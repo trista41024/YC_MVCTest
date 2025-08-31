@@ -1,0 +1,131 @@
+﻿@model Orders
+@{
+    bool isEdit = Model.OrderID > 0;
+}
+
+<form id="orderForm">
+    @Html.AntiForgeryToken()
+
+    @if (isEdit)
+    {
+        @Html.HiddenFor(m => m.OrderID)
+    }
+
+    <div class="row">
+        <!-- 基本資訊 -->
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="CustomerID" class="form-label">客戶ID</label>
+                <select class="form-select" asp-for="CustomerID" required>
+                    <option value="ALFKI" selected>Alfreds Futterkiste</option>
+                    <option value="ANATR">Ana Trujillo Emparedados</option>
+                    <option value="ANTON">Antonio Moreno Taquería</option>
+                    <option value="BERGS">Berglunds snabbköp</option>
+                    <option value="BLAUS">Blauer See Delikatessen</option>
+                </select>
+                <span asp-validation-for="CustomerID" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="EmployeeID" class="form-label">員工ID</label>
+                <select class="form-select" asp-for="EmployeeID" required>
+                    <option value="1">Nancy Davolio</option>
+                    <option value="2">Andrew Fuller</option>
+                    <option value="3">Janet Leverling</option>
+                    <option value="4">Margaret Peacock</option>
+                    <option value="5">Steven Buchanan</option>
+                </select>
+                <span asp-validation-for="EmployeeID" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="OrderDate" class="form-label">訂單日期</label>
+                <input type="date" class="form-control" asp-for="OrderDate" required />
+                <span asp-validation-for="OrderDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="RequiredDate" class="form-label">要求日期</label>
+                <input type="date" class="form-control" asp-for="RequiredDate" />
+                <span asp-validation-for="RequiredDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="ShippedDate" class="form-label">出貨日期</label>
+                <input type="date" class="form-control" asp-for="ShippedDate" />
+                <span asp-validation-for="ShippedDate" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- 運送資訊 -->
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="ShipVia" class="form-label">運送方式</label>
+                <select class="form-select" asp-for="ShipVia">
+                    <option value="">請選擇運送方式</option>
+                    <option value="1">1 - Speedy Express</option>
+                    <option value="2">2 - United Package</option>
+                    <option value="3">3 - Federal Shipping</option>
+                </select>
+                <span asp-validation-for="ShipVia" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="Freight" class="form-label">運費</label>
+                <input type="number" step="0.01" class="form-control" asp-for="Freight" placeholder="0.00" />
+                <span asp-validation-for="Freight" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="ShipName" class="form-label">收件人姓名</label>
+                <input type="text" class="form-control" asp-for="ShipName" placeholder="請輸入收件人姓名" />
+                <span asp-validation-for="ShipName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="ShipAddress" class="form-label">收件地址</label>
+                <input type="text" class="form-control" asp-for="ShipAddress" placeholder="請輸入收件地址" />
+                <span asp-validation-for="ShipAddress" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="ShipCity" class="form-label">收件城市</label>
+                        <input type="text" class="form-control" asp-for="ShipCity" placeholder="城市" />
+                        <span asp-validation-for="ShipCity" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="ShipRegion" class="form-label">收件地區</label>
+                        <input type="text" class="form-control" asp-for="ShipRegion" placeholder="地區" />
+                        <span asp-validation-for="ShipRegion" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="ShipPostalCode" class="form-label">郵遞區號</label>
+                        <input type="text" class="form-control" asp-for="ShipPostalCode" placeholder="郵遞區號" />
+                        <span asp-validation-for="ShipPostalCode" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="ShipCountry" class="form-label">收件國家</label>
+                        <input type="text" class="form-control" asp-for="ShipCountry" placeholder="國家" />
+                        <span asp-validation-for="ShipCountry" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="saveOrder()">儲存</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+    </div>
+</form>
